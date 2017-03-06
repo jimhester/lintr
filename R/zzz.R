@@ -4,6 +4,8 @@
 #' @title linters
 #' @param source_file returned by \code{\link{get_source_expressions}}
 #' @param length the length cutoff to use for the given linter.
+#' @param spaces number of spaces per indentation level. \code{NULL} or \code{0} means 1 tab per level.
+#' @param linter_name the name to use for a parameterized linter.
 NULL
 
 named_list <- function(...) {
