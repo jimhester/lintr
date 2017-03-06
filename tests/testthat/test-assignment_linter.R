@@ -1,5 +1,6 @@
 context("assignment_linter")
 options(encoding = "UTF-8")
+Sys.setenv(LANGUAGE = "en")  # make sure no translated messages are matched
 test_that("returns the correct linting", {
   expect_lint("blah", NULL, assignment_linter)
 

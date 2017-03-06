@@ -4,6 +4,7 @@
 #' @title linters
 #' @param source_file returned by \code{\link{get_source_expressions}}
 #' @param length the length cutoff to use for the given linter.
+#' @param check_empty_lines if \code{trailing_whitespace_linter} should consider completely empty lines.
 NULL
 
 named_list <- function(...) {
@@ -74,7 +75,7 @@ default_linters <- with_defaults(default = list(),
   multiple_dots_linter,
   object_length_linter(30),
   object_usage_linter,
-  trailing_whitespace_linter,
+  trailing_whitespace_linter(),
   trailing_blank_lines_linter,
   commented_code_linter,
 

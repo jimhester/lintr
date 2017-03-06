@@ -65,7 +65,7 @@ trailing_blank_lines_linter(source_file)
 
 trailing_semicolons_linter(source_file)
 
-trailing_whitespace_linter(source_file)
+trailing_whitespace_linter(check_empty_lines = TRUE)
 }
 \arguments{
 \item{source_file}{returned by \code{\link{get_source_expressions}}}
@@ -74,6 +74,8 @@ trailing_whitespace_linter(source_file)
 same line.}
 
 \item{length}{the length cutoff to use for the given linter.}
+
+\item{check_empty_lines}{if \code{trailing_whitespace_linter} should consider completely empty lines.}
 }
 \description{
 Available linters
