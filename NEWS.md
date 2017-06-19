@@ -15,8 +15,7 @@
   @gaborcsardi) and between expressions (#181, @fangly).
 * New nonportable_path_linter() identifies paths constructed without file.path()
   (@fangly).
-* New unneeded_concatenation_linter() lints uses of c() with a constant or no
-  arguments (@fangly).
+* New concatenation_linter() lints unneeded and (some) coercive uses of c() (@fangly).
 * New T_and_F_symbol_linter() warns when using T and F instead of TRUE and FALSE
   (@fangly).
 * New todo_comment_linter() lints TODOs (@fangly).

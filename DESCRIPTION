@@ -36,7 +36,7 @@ License: MIT + file LICENSE
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
-Collate: 
+Collate:
     'T_and_F_symbol_linter.R'
     'aaa.R'
     'assignment_linter.R'
@@ -45,6 +45,7 @@ Collate:
     'commas_linter.R'
     'comment_linters.R'
     'comments.R'
+    'concatenation_linter.R'
     'object_name_linters.R'
     'deprecated.R'
     'exclude.R'
@@ -74,6 +75,5 @@ Collate:
     'tree-utils.R'
     'undesirable_function_linter.R'
     'undesirable_operator_linter.R'
-    'unneeded_concatenation_linter.R'
     'utils.R'
     'zzz.R'
