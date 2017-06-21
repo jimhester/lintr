@@ -60,6 +60,7 @@ Collate:
     'lint.R'
     'methods.R'
     'no_tab_linter.R'
+    'nonlocal_variable_linter.R'
     'object_usage_linter.R'
     'open_curly_linter.R'
     'path_linters.R'

@@ -93,7 +93,7 @@ lint <- function(filename, linters = NULL, cache = FALSE, ..., parse_settings = 
     }
   }
 
-  lints <- structure(reorder_lints(flatten_lints(lints)), class = "lints")
+  lints <- structure(tidy_lints(flatten_lints(lints)), class = "lints")
 
 
   if (isTRUE(cache)) {
@@ -110,17 +110,6 @@ lint <- function(filename, linters = NULL, cache = FALSE, ..., parse_settings = 
     }
   }
   res
-}
-
-reorder_lints <- function(lints) {
-  files <- vapply(lints, `[[`, character(1), "filename")
-  lines <- vapply(lints, `[[`, integer(1), "line_number")
-  columns <- vapply(lints, `[[`, integer(1), "column_number")
-  lints[
-    order(files,
-      lines,
-      columns)
-    ]
 }
 
 #' Lint a package
@@ -168,7 +157,7 @@ lint_package <- function(path = ".", relative_path = TRUE, ...) {
     message() # for a newline
   }
 
-  lints <- reorder_lints(lints)
+  lints <- tidy_lints(lints)
 
   if (relative_path == TRUE) {
     lints[] <- lapply(lints,

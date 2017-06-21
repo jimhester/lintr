@@ -4,14 +4,7 @@
 #' @export
 object_usage_linter <-  function(source_file) {
   # we need to evaluate each expression in order to use checkUsage on it.
-
-  pkg_name <- pkg_name(find_package(dirname(source_file$filename)))
-  if (!is.null(pkg_name)) {
-    parent_env <- try_silently(getNamespace(pkg_name))
-  }
-  if (is.null(pkg_name) || inherits(parent_env, "try-error")) {
-    parent_env <- globalenv()
-  }
+  parent_env <- parent_env(source_file)
   env <- new.env(parent = parent_env)
 
   globals <- mget(".__global__",
@@ -29,10 +22,8 @@ object_usage_linter <-  function(source_file) {
     function(loc) {
       id <- source_file$parsed_content$id[loc]
 
-      parent_ids <- parents(source_file$parsed_content, id, simplify = FALSE)
-
       # not a top level function, so just return.
-      if (length(parent_ids) > 3L) {
+      if (!is_top_level(id, source_file)) {
         return(NULL)
       }
 
@@ -93,6 +84,23 @@ object_usage_linter <-  function(source_file) {
 
     })
 }
+
+parent_env <- function(source_file) {
+  pkg_name <- pkg_name(find_package(dirname(source_file$filename)))
+  if (!is.null(pkg_name)) {
+    parent_env <- try_silently(getNamespace(pkg_name))
+  }
+  if (is.null(pkg_name) || inherits(parent_env, "try-error")) {
+    parent_env <- globalenv()
+  }
+  parent_env
+}
+
+is_top_level <- function(id, source_file) {
+  parent_ids <- parents(source_file$parsed_content, id, simplify = FALSE)
+  length(parent_ids) <= 3L
+}
+
 
 parse_check_usage <- function(expression) {
 

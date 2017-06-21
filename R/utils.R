@@ -14,6 +14,21 @@
   !identical(x, y)
 }
 
+
+# sort lints and remove duplicates
+tidy_lints <- function(lints) {
+  files <- vapply(lints, `[[`, character(1L), "filename")
+  lines <- vapply(lints, `[[`, integer(1L), "line_number")
+  columns <- vapply(lints, `[[`, integer(1L), "column_number")
+  messages <- vapply(lints, `[[`, character(1), "message")
+
+  dups <- which(duplicated(files) & duplicated(lines) & duplicated(columns) & duplicated(messages))
+  order <- order(files, lines, columns)
+
+  lints[ order[!order %in% dups] ]
+}
+
+
 flatten_lints <- function(x) {
   structure(
     flatten_list(x, class = "lint"),

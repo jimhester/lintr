@@ -4,12 +4,13 @@
 %   R/object_name_linters.R, R/deprecated.R, R/extraction_operator_linter.R,
 %   R/function_left_parentheses.R, R/implicit_integer_linter.R,
 %   R/infix_spaces_linter.R, R/line_length_linter.R, R/no_tab_linter.R,
-%   R/object_usage_linter.R, R/open_curly_linter.R, R/path_linters.R,
-%   R/pipe_continuation_linter.R, R/semicolon_terminator_linter.R,
-%   R/seq_linter.R, R/single_quotes_linter.R, R/spaces_inside_linter.R,
-%   R/spaces_left_parentheses_linter.R, R/trailing_blank_lines_linter.R,
-%   R/trailing_whitespace_linter.R, R/undesirable_function_linter.R,
-%   R/undesirable_operator_linter.R, R/unneeded_concatenation_linter.R, R/zzz.R
+%   R/nonlocal_variable_linter.R, R/object_usage_linter.R,
+%   R/open_curly_linter.R, R/path_linters.R, R/pipe_continuation_linter.R,
+%   R/semicolon_terminator_linter.R, R/seq_linter.R, R/single_quotes_linter.R,
+%   R/spaces_inside_linter.R, R/spaces_left_parentheses_linter.R,
+%   R/trailing_blank_lines_linter.R, R/trailing_whitespace_linter.R,
+%   R/undesirable_function_linter.R, R/undesirable_operator_linter.R,
+%   R/unneeded_concatenation_linter.R, R/zzz.R
 \name{T_and_F_symbol_linter}
 \alias{T_and_F_symbol_linter}
 \alias{assignment_linter}
@@ -26,6 +27,7 @@
 \alias{infix_spaces_linter}
 \alias{line_length_linter}
 \alias{no_tab_linter}
+\alias{nonlocal_variable_linter}
 \alias{object_usage_linter}
 \alias{open_curly_linter}
 \alias{absolute_path_linter}
@@ -73,6 +75,8 @@ infix_spaces_linter(source_file)
 line_length_linter(length)
 
 no_tab_linter(source_file)
+
+nonlocal_variable_linter(source_file)
 
 object_usage_linter(source_file)
 
@@ -171,6 +175,9 @@ do not have spaces before them.
 than length.
 
 \item \code{no_tab_linter}: check that only spaces are used for indentation, not tabs.
+
+\item \code{nonlocal_variable_linter}: Check that functions avoid the use of non-local variables. Note that this
+uses \code{\link[base]{eval}}, so do not use with untrusted code.
 
 \item \code{object_usage_linter}: checks that closures have the proper usage using
 \code{\link[codetools]{checkUsage}}.  Note this runs
