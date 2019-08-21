@@ -61,6 +61,7 @@ Collate:
     'line_length_linter.R'
     'lint.R'
     'methods.R'
+    'multiple_dot_args_linter.R'
     'no_tab_linter.R'
     'object_usage_linter.R'
     'open_curly_linter.R'

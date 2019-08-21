@@ -4,13 +4,13 @@
 %   R/object_name_linters.R, R/deprecated.R, R/equals_na_lintr.R,
 %   R/extraction_operator_linter.R, R/function_left_parentheses.R,
 %   R/implicit_integer_linter.R, R/infix_spaces_linter.R,
-%   R/line_length_linter.R, R/no_tab_linter.R, R/object_usage_linter.R,
-%   R/open_curly_linter.R, R/path_linters.R, R/pipe_continuation_linter.R,
-%   R/semicolon_terminator_linter.R, R/seq_linter.R, R/single_quotes_linter.R,
-%   R/spaces_inside_linter.R, R/spaces_left_parentheses_linter.R,
-%   R/trailing_blank_lines_linter.R, R/trailing_whitespace_linter.R,
-%   R/undesirable_function_linter.R, R/undesirable_operator_linter.R,
-%   R/unneeded_concatenation_linter.R, R/zzz.R
+%   R/line_length_linter.R, R/multiple_dot_args_linter.R, R/no_tab_linter.R,
+%   R/object_usage_linter.R, R/open_curly_linter.R, R/path_linters.R,
+%   R/pipe_continuation_linter.R, R/semicolon_terminator_linter.R,
+%   R/seq_linter.R, R/single_quotes_linter.R, R/spaces_inside_linter.R,
+%   R/spaces_left_parentheses_linter.R, R/trailing_blank_lines_linter.R,
+%   R/trailing_whitespace_linter.R, R/undesirable_function_linter.R,
+%   R/undesirable_operator_linter.R, R/unneeded_concatenation_linter.R, R/zzz.R
 \name{T_and_F_symbol_linter}
 \alias{T_and_F_symbol_linter}
 \alias{assignment_linter}
@@ -27,6 +27,7 @@
 \alias{implicit_integer_linter}
 \alias{infix_spaces_linter}
 \alias{line_length_linter}
+\alias{multiple_dot_args_linter}
 \alias{no_tab_linter}
 \alias{object_usage_linter}
 \alias{open_curly_linter}
@@ -75,6 +76,8 @@ implicit_integer_linter(source_file)
 infix_spaces_linter(source_file)
 
 line_length_linter(length)
+
+multiple_dot_args_linter(source_file)
 
 no_tab_linter(source_file)
 
@@ -175,6 +178,9 @@ do not have spaces before them.
 
 \item \code{line_length_linter}: check the line length of both comments and code is less
 than length.
+
+\item \code{multiple_dot_args_linter}: check that functions with \code{...}-arguments hand them
+over to sub-functions at most once
 
 \item \code{no_tab_linter}: check that only spaces are used for indentation, not tabs.
 
