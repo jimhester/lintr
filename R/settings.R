@@ -78,7 +78,7 @@ find_config <- function(filename) {
     return(linter_config)
   }
 
-  ## next check for a file higher directories
+  ## next check for a file in higher directories
   linter_config <- find_config2(path)
   if (isTRUE(file.exists(linter_config))) {
     return(linter_config)
