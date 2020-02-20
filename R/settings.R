@@ -84,7 +84,15 @@ find_config <- function(filename) {
     return(linter_config)
   }
 
-  ## next check for a file in the user directory
+  ## next check for a file in the user config directory
+  config_dir <- Sys.getenv("XDG_CONFIG_HOME", unset = "~/.config")
+  # inside the config directory files are not hidden by convention
+  linter_config <- file.path(config_dir, sub("^\\.", "", linter_file))
+  if (isTRUE(file.exists(linter_config))) {
+    return(linter_config)
+  }
+
+  ## lastly fall back to the user home directory
   # cf: rstudio@bc9b6a5 SessionRSConnect.R#L32
   home_dir <- Sys.getenv("HOME", unset = "~")
   linter_config <- file.path(home_dir, linter_file)
