@@ -61,6 +61,7 @@ Collate:
     'get_source_expressions.R'
     'ids_with_token.R'
     'implicit_integer_linter.R'
+    'indentation_linter.R'
     'infix_spaces_linter.R'
     'line_length_linter.R'
     'lint.R'
