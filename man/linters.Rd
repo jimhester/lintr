@@ -14,7 +14,7 @@
 %   R/spaces_left_parentheses_linter.R, R/sprintf_linter.R,
 %   R/trailing_blank_lines_linter.R, R/trailing_whitespace_linter.R,
 %   R/undesirable_function_linter.R, R/undesirable_operator_linter.R,
-%   R/unneeded_concatenation_linter.R
+%   R/unneeded_concatenation_linter.R, R/unused_import_linter.R
 \name{linters}
 \alias{linters}
 \alias{T_and_F_symbol_linter}
@@ -56,6 +56,7 @@
 \alias{undesirable_function_linter}
 \alias{undesirable_operator_linter}
 \alias{unneeded_concatenation_linter}
+\alias{unused_import_linter}
 \title{linters}
 \usage{
 T_and_F_symbol_linter(source_file)
@@ -138,6 +139,8 @@ undesirable_function_linter(
 undesirable_operator_linter(op = default_undesirable_operators)
 
 unneeded_concatenation_linter(source_file)
+
+unused_import_linter(except_packages = "tidyverse")
 }
 \arguments{
 \item{source_file}{returned by \code{\link{get_source_expressions}}}
@@ -292,5 +295,7 @@ and suggest an alternative.
 
 \item \code{unneeded_concatenation_linter}: Check that the \code{c} function is not used without arguments nor with a
 single constant.
+
+\item \code{unused_import_linter}: checks that libraries imported are actually used.
 }}
 

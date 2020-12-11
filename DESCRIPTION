@@ -92,5 +92,6 @@ Collate:
     'undesirable_function_linter.R'
     'undesirable_operator_linter.R'
     'unneeded_concatenation_linter.R'
+    'unused_import_linter.R'
     'with_id.R'
     'zzz.R'
