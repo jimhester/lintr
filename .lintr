@@ -1,6 +1,6 @@
 linters: with_defaults( # The following TODOs are part of an effort to have {lintr} lint-free (#584)
    line_length_linter = line_length_linter(120),
-   cyclocomp_linter = cyclocomp_linter(28) # TODO reduce to 15
+   cyclocomp_linter = cyclocomp_linter(19) # TODO reduce to 15
  )
 exclusions: list(
   "inst/doc/creating_linters.R" = 1,
