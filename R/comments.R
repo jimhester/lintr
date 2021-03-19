@@ -1,5 +1,5 @@
 in_ci <- function() {
-  in_travis() || in_wercker()
+  in_travis() || in_wercker() || in_jenkins()
 }
 
 ci_type <- function() {
@@ -9,7 +9,36 @@ ci_type <- function() {
   if (in_wercker()) {
     return("wercker")
   }
+  if (in_jenkins()) {
+    return("jenkins")
+  }
   ""
+}
+
+in_jenkins <- function() {
+  nzchar(Sys.getenv("JENKINS_URL")) && !is.null(jenkins_build_info())
+}
+
+jenkins_build_info <- function() {
+  git_url <- Sys.getenv("GIT_URL", Sys.getenv("GIT_URL_1", NA))
+  if (is.na(git_url)) {
+    return(NULL)
+  }
+
+  pattern <- "(https?:\\/\\/|git@)github\\.com[:\\/](.+\\/.+)\\.git"
+  if (!length(grep(pattern, git_url))) {
+    return(NULL)
+  }
+  slug <- gsub(pattern, "\\2", git_url)
+
+  slug_info <- strsplit(slug, "/")[[1]]
+
+  list(
+    user = slug_info[1],
+    repo = slug_info[2],
+    pull = Sys.getenv("CHANGE_ID", NA) %||% NULL,
+    commit = Sys.getenv("GIT_COMMIT", NA) %||% NULL
+  )
 }
 
 in_travis <- function() {
@@ -38,7 +67,8 @@ ci_build_info <- function() {
   switch(
     type,
     travis = travis_build_info(),
-    wercker = wercker_build_info()
+    wercker = wercker_build_info(),
+    jenkins = jenkins_build_info()
   )
 }
 
