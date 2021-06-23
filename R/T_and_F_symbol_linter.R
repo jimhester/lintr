@@ -42,7 +42,8 @@ T_and_F_symbol_linter <- function() { # nolint: object_name_linter.
         source_file = source_file,
         message = message,
         type = "style",
-        offset = 1L
+        offset = 1L,
+        fix = replacement
       )
     }
 

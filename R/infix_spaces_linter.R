@@ -54,11 +54,14 @@ infix_spaces_linter <- function() {
           start <- end <- parsed$col1
 
           if (is_infix) {
+            fix <- substr(line, parsed$col1, parsed$col2)
             if (non_space_before) {
               start <- parsed$col1 - 1L
+              fix <- paste0(substr(line, start, start), " ", fix)
             }
             if (non_space_after) {
               end <- parsed$col2 + 1L
+              fix <- paste0(fix, " ", substr(line, end, end))
             }
 
             Lint(
@@ -68,7 +71,8 @@ infix_spaces_linter <- function() {
               type = "style",
               message = "Put spaces around all infix operators.",
               line = line,
-              ranges = list(c(start, end))
+              ranges = list(c(start, end)),
+              fixes = fix
             )
           }
         }
