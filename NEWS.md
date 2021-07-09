@@ -1,73 +1,105 @@
 # lintr (development version)
 
-* Updated R CMD GitHub Actions workflow to check for R 3.6 on Ubuntu, instead of R 3.3, and for R 4.0 on Windows, instead of R 3.6 (#803, @ dragosmg)
-* Added a secondary, more restrictive lint workflow - `lint-changed-files` - for newly written / modified code (#641, @dragosmg) 
-* Switched CI from Travis to GitHub Actions, using the full tidyverse recommended R CMD check. Code coverage and linting 
-  are implemented using separate GitHub Actions workflows (#572, @dragosmg)
-* `save_cache` will now recursively create the cache directory; this avoids errors that could arise if any parent 
-  directories do not exist (#60, @dankessler).
-* `extract_r_source` handles Rmd containing unevaluated code blocks with named
-  format specifiers (#472, @russHyde)
-* New style SNAKE_CASE for `object_name_linter()` (#494, @AshesITR)
-* RStudio source markers are cleared when there are no lints (#520, @AshesITR)
-* New `assignment_spaces()` lintr. (#538, @f-ritter)
-* `seq_linter()`'s lint message is clearer about the reason for linting. (#522, @michaelchirico)
-* New `missing_package_linter()` (#536, #547, @renkun-ken)
-* New `namespace_linter()` (#548, #551, @renkun-ken)
-* Fix possible error on invalid XML produced by xmlparsedata (#559, #560, @renkun-ken)
-* Fix handling zero-length variable name error (#566, #567, @renkun-ken)
-* New `missing_argument_linter()` (#563, #565, @renkun-ken)
-* New `sprintf_linter()` (#544, #578, #624, #625, @renkun-ken, @AshesITR)
+
+  
+# lintr 3.0.0
+
+## Breaking changes
+
 * Exclusions specified in the `.lintr` file are now relative to the location of that file 
   and support excluding entire directories (#158, #438, @AshesITR)
-* `lint_dir()` excludes the `renv` and `packrat` directories by default (#697, @AshesITR)
-* `object_name_linter()` now excludes special R hook functions such as `.onLoad` 
-  (#500, #614, @AshesITR and @michaelchirico)
-* Improved generic detection for `object_name_linter()` (#737, @AshesITR)
-* `equals_na_linter()` now lints `x != NA` and `NA == x`, and skips usages in comments (#545, @michaelchirico)
-* Malformed Rmd files now cause a lint instead of an error (#571, #575, @AshesITR)
+  Previously, exclusions were parsed relative to the current working directory when linting. Update the exclusion 
+  paths in your `.lintr` file if you see unexpected lints.
+* Lints are now marked with the name of the `linter` that caused them instead of the name of their implementation
+  function. Deprecated the obsolete `linter` argument of `Lint()`. (#664, #673, #746, @AshesITR)
+  If you wrote a custom linter, just remove the argument `linter` in your call to `Lint()`.
+* Consistent access to linters through a function call, even for linters without parameters. Deprecation warnings 
+  will be issued if the old style is used. (#245, @fangly, @AshesITR, and @MichaelChirico)
+  If you used linters without arguments in your `.lintr`, add an empty set of parentheses `()` to these.
+  If you wrote a custom linter, wrap the linting function into a constructor function returning a `lintr::Linter()`.
+  
+## Other changes to defaults
+
+* Set the default `complexity_limit` in `cyclocomp_linter()` to 15. This is the same complexity limit that is
+  enforced via `default_linters` (#693, #695, @AshesITR).
+* `lint_package()` now lints files in the `demo` directory by default (#703, @dmurdoch).
 * `object_name_linter()` gains a new default style, `"symbols"`, which won't lint all-symbol object names 
   (in particular, that means operator names like `%+%` are skipped; #495, #615, #670, @michaelchirico and @AshesITR)
-* `spaces_inside_linter` ignores spaces preceding trailing comments (#636, @michaelchirico)
-* `T_and_F_symbol_linter` and `semicolon_terminator_linter` are now part of the default linters
+* `T_and_F_symbol_linter()` and `semicolon_terminator_linter()` are now part of the default linters
   (#517, #612, #683, #684, @AshesITR)
-* `with_defaults()` no longer duplicates the `lintr_function` class when it is already present (#511, #612, @AshesITR)
-* New `backport_linter()` for detecting mismatched R version dependencies (#506, @MichaelChirico)
-* `paren_brace_linter` and `no_tab_linter` also use more reliable matching (e.g.,
-  excluding matches found in comments; #441 and #545, @russHyde)
-* `paren_brace_linter` now marks lints at the opening brace instead of the closing parenthesis, making fixing the lints
-  by jumping to source markers easier (#583, @AshesITR)
-* Lints are now marked with the name of the `linter` that caused them instead of the name of their implementation
-  function.    
-  Deprecated the obsolete `linter` argument of `Lint()`. (#664, #673, #746, @AshesITR)
+
+## New features
+
 * New syntax to exclude only selected linters from linting lines or passages. Use `# nolint: linter_name, linter2_name.`
   or `# nolint start: linter_name, linter2_name.` in source files or named lists of line numbers in `.lintr`.
   (#660, @AshesITR)
-* Fixed `spaces_left_parentheses_linter` sporadically causing warnings (#654, #674, @AshesITR)
-* Fixed `line_length_linter` causing duplicate lints for lines containing multiple expressions (#681, #682, @AshesITR)
-* `line_length_linter` now places the source marker at the margin of the affected line to improve user experience during 
-  de-linting -- just press <kbd>Return</kbd> (#735, @AshesITR)
-* `unneeded_concatenation_linter` now correctly considers arguments piped in via magrittr `%>%` (#573, #585, @michaelquinn32)
-* Set the default `complexity_limit` in `cyclocomp_linter` to 15. This is the same complexity limit that is enforced via
-  `default_linters` (#693, #695, @AshesITR).
-* `lint_package()` now lints files in the `demo` directory by default (#703, @dmurdoch).
-* `object_usage_linter()` now correctly detects global variables if there are top-level dollar-assignments (#666, #709, @AshesITR)
-* `commented_code_linter()` uses the parse tree to find comments, eliminating some false positives (#451, @AshesITR)
-* `trailing_blank_lines_linter()` now also lints files without a terminal newline (#675, @AshesITR)
-* `object_name_linter()` now correctly detects imported functions when linting packages (#642, @AshesITR)
-* Consistent access to linters through a function call, even for linters without parameters (#245, @fangly, @AshesITR, and @MichaelChirico)
-* `object_usage_linter()` now correctly reports usage warnings spanning multiple lines (#507, @AshesITR)
-* `T_and_F_symbol_linter()` no longer lints occurrences of `T` and `F` when used for subsetting and gives a better 
-  message when used as variable names (#657, @AshesITR)
-* `with_defaults()` handles automatic naming of very long arguments correctly (#774, @michaelchirico)
-* `object_name_linter()` no longer lints names used for subsetting (#582, @AshesITR)
-* `lint_package()` warns and returns `NULL` if no package is found (instead of giving a peculiar error message) (#776, @michaelchirico)
-* `lint_package()` is also stricter about what it considers to be a package -- folders named `DESCRIPTION` are ignored (#702, @michaelchirico)
-* `lint()` now has a new optional argument `text` for supplying a string or lines directly, e.g. if the file is already in memory or linting is being done ad hoc. (#503, @renkun-ken)
-* New `pipe_call_linter()` enforces that all steps of `magrittr` pipelines use explicit calls instead of symbols, e.g. `x %>% mean()` instead of `x %>% mean` (@michaelchirico)
-* `get_source_expressions()` no longer fails if `getParseData()` returns a truncated (invalid) Unicode character as parsed text (#815, #816, @leogama)
-* lintr now supports non-system character Encodings. Auto-detects the correct encoding from .Rproj or DESCRIPTION 
+* lintr now supports non-system character Encodings. Auto-detects the correct encoding from .Rproj or DESCRIPTION
   files in your project. Override the default in the `encoding` setting of lintr. (#752, #782, @AshesITR)
+* New `assignment_spaces()` linter. (#538, @f-ritter)
+* New `backport_linter()` for detecting mismatched R version dependencies (#506, @MichaelChirico)
+* `lint()` now has a new optional argument `text` for supplying a string or lines directly, e.g. if the file is 
+  already in memory or linting is being done ad hoc. (#503, @renkun-ken)
+* New `missing_argument_linter()` (#563, #565, @renkun-ken)
+* New `missing_package_linter()` (#536, #547, @renkun-ken)
+* New `namespace_linter()` (#548, #551, @renkun-ken)
+* New style SNAKE_CASE for `object_name_linter()` (#494, @AshesITR)
+* New `pipe_call_linter()` enforces that all steps of `magrittr` pipelines use explicit calls instead of symbols,
+  e.g. `x %>% mean()` instead of `x %>% mean` (@michaelchirico)
+* New `sprintf_linter()` (#544, #578, #624, #625, @renkun-ken, @AshesITR)
+* `trailing_blank_lines_linter()` now also lints files without a terminal newline (#675, @AshesITR)
+
+## Minor improvements and fixes
+
+* Fix possible error on invalid XML produced by xmlparsedata (#559, #560, @renkun-ken)
+* Fix handling zero-length variable name error (#566, #567, @renkun-ken)
+* RStudio source markers are cleared when there are no lints (#520, @AshesITR)
+* Malformed Rmd files now cause a lint instead of an error (#571, #575, @AshesITR)
+* `commented_code_linter()` uses the parse tree to find comments, eliminating some false positives (#451, @AshesITR)
+* `extract_r_source()` handles Rmd containing unevaluated code blocks with named
+  format specifiers (#472, @russHyde)
+* `equals_na_linter()` now lints `x != NA` and `NA == x`, and skips usages in comments (#545, @michaelchirico)
+* `get_source_expressions()` no longer fails if `getParseData()` returns a truncated (invalid) Unicode character as
+  parsed text (#815, #816, @leogama)
+* Fixed `line_length_linter()` causing duplicate lints for lines containing multiple expressions (#681, #682, @AshesITR)
+* `line_length_linter()` now places the source marker at the margin of the affected line to improve user experience
+  during de-linting -- just press <kbd>Return</kbd> (#735, @AshesITR)
+* `lint_dir()` excludes the `renv` and `packrat` directories by default (#697, @AshesITR)
+* `lint_package()` warns and returns `NULL` if no package is found (instead of giving a peculiar error message) 
+  (#776, @michaelchirico)
+* `lint_package()` is also stricter about what it considers to be a package -- folders named `DESCRIPTION` are 
+  ignored (#702, @michaelchirico)
+* `object_name_linter()` now excludes special R hook functions such as `.onLoad`
+* Improved generic detection for `object_name_linter()` (#737, @AshesITR)
+* `object_name_linter()` now correctly detects imported functions when linting packages (#642, @AshesITR)
+* `object_usage_linter()` now correctly detects global variables if there are top-level dollar-assignments
+  (#666, #709, @AshesITR)
+* `object_name_linter()` no longer lints names used for subsetting (#582, @AshesITR)
+* `object_usage_linter()` now correctly reports usage warnings spanning multiple lines (#507, @AshesITR)
+* `paren_brace_linter()` and `no_tab_linter()` also use more reliable matching (e.g.,
+  excluding matches found in comments; #441 and #545, @russHyde)
+* `paren_brace_linter()` now marks lints at the opening brace instead of the closing parenthesis, making fixing the
+  lints by jumping to source markers easier (#583, @AshesITR)
+* `save_cache()` will now recursively create the cache directory; this avoids errors that could arise if any parent 
+  directories do not exist (#60, @dankessler).
+* `seq_linter()`'s lint message is clearer about the reason for linting. (#522, @michaelchirico)
+  (#500, #614, @AshesITR and @michaelchirico)
+* `spaces_inside_linter()` ignores spaces preceding trailing comments (#636, @michaelchirico)
+* Fixed `spaces_left_parentheses_linter()` sporadically causing warnings (#654, #674, @AshesITR)
+* `T_and_F_symbol_linter()` no longer lints occurrences of `T` and `F` when used for subsetting and gives a better
+  message when used as variable names (#657, @AshesITR)
+* `unneeded_concatenation_linter()` now correctly considers arguments piped in via magrittr `%>%` (#573, #585,
+  @michaelquinn32)
+* `with_defaults()` no longer duplicates the `lintr_function` class when it is already present (#511, #612, @AshesITR)
+* `with_defaults()` handles automatic naming of very long arguments correctly (#774, @michaelchirico)
+
+## Internal changes
+
+* Updated R CMD GitHub Actions workflow to check for R 3.6 on Ubuntu, instead of R 3.3, and for R 4.0 on Windows, 
+  instead of R 3.6 (#803, @ dragosmg)
+* Added a secondary, more restrictive lint workflow - `lint-changed-files` - for newly written / modified code (#641,
+  @dragosmg) 
+* Switched CI from Travis to GitHub Actions, using the full tidyverse recommended R CMD check. Code coverage and 
+  linting are implemented using separate GitHub Actions workflows (#572, @dragosmg)
 
 # lintr 2.0.1
 
